@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your savings goals with our free tool. Set financial targets, monitor progress with neon charts, and switch currencies easily.">
+    <meta name="keywords" content="Savings Goal Tracker, Financial Planning, Budget Calculator, Neon Design, Multi-Currency">
+    <title>Savings Goal Tracker | GameNeXT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+        }
+        .main-content {
+            grid-column: 2 / 3;
+        }
+        header h1 {
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 0 0 15px #3b82f6, 0 0 25px #22c55e;
+            margin-bottom: 20px;
+        }
+        .introduction {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .highlight {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        /* Form Styles */
+        form {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #3b82f6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            text-shadow: 0 0 5px #22c55e;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #3b82f6;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            box-shadow: 0 0 5px #22c55e;
+            transition: box-shadow 0.3s;
+        }
+        input[type="number"]:focus {
+            box-shadow: 0 0 15px #3b82f6;
+            outline: none;
+        }
+        /* Currency Dropdown */
+        .currency-select {
+            position: relative;
+            margin: 10px 0;
+        }
+        #currency-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border: 1px solid #3b82f6;
+            border-radius: 5px;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 5px #22c55e;
+            text-align: left;
+            transition: box-shadow 0.3s;
+        }
+        #currency-button:hover {
+            box-shadow: 0 0 15px #3b82f6;
+        }
+        #currency-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #3b82f6;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #22c55e;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            z-index: 10;
+        }
+        #currency-dropdown.open {
+            max-height: 200px;
+        }
+        #currency-search {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-bottom: 1px solid #3b82f6;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+        #currency-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        #currency-list li {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #currency-list li:hover {
+            background-color: #3b82f6;
+        }
+        button {
+            background-color: #3b82f6;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 0 10px #3b82f6;
+            transition: box-shadow 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            box-shadow: 0 0 20px #3b82f6;
+        }
+        /* Results Styles */
+        #results {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .progress-container {
+            margin: 20px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .progress-container.show {
+            opacity: 1;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        .progress {
+            height: 20px;
+            background-color: #3b82f6;
+            width: 0;
+            transition: width 1s ease-in-out;
+            box-shadow: 0 0 10px #3b82f6;
+        }
+        #progress-label {
+            margin-top: 10px;
+            text-shadow: 0 0 5px #22c55e;
+        }
+        #savings-chart {
+            margin: 40px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Tips and Resources */
+        #tips, #resources {
+            text-align: center;
+            margin: 40px 0;
+        }
+        #tips h2, #resources h2 {
+            text-shadow: 0 0 10px #3b82f6;
+        }
+        #tips-content {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .resource-card {
+            display: inline-block;
+            background-color: #1a1a1a;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        .resource-card a {
+            color: #22c55e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        /* Ad Space */
+        .ad-space {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #3b82f6;
+            text-align: center;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow 0.3s;
+        }
+        .ad-space:hover {
+            box-shadow: 0 0 20px #3b82f6;
+        }
+        .ad-left {
+            grid-column: 1 / 2;
+        }
+        .ad-right {
+            grid-column: 3 / 4;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.8em;
+            color: #cccccc;
+            margin-top: 40px;
+            grid-column: 1 / 4;
+        }
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .main-content, .ad-left, .ad-right, footer {
+                grid-column: 1 / 2;
+            }
+            .ad-space {
+                height: 200px;
+                margin: 20px 0;
+            }
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            form, .progress-container, #savings-chart {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Ad Space -->
+        <div class="ad-space ad-left">Advertisement Left</div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header>
+                <h1>Savings Goal Tracker</h1>
+            </header>
+            <main>
+                <section class="introduction">
+                    <p>Set and track your <span class="highlight">financial goals</span> with our futuristic tool. Visualize your progress with neon charts and progress bars!</p>
+                </section>
+                <form id="savings-form">
+                    <label for="goal-amount">Savings Goal</label>
+                    <input type="number" id="goal-amount" placeholder="e.g., 10000" min="0" step="100">
+                    <label for="current-savings">Current Savings</label>
+                    <input type="number" id="current-savings" placeholder="e.g., 2000" min="0" step="100">
+                    <label for="monthly-contribution">Monthly Contribution</label>
+                    <input type="number" id="monthly-contribution" placeholder="e.g., 500" min="0" step="10">
+                    <label for="interest-rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="interest-rate" placeholder="e.g., 2" min="0" max="100" step="0.1">
+                    <div class="currency-select">
+                        <button type="button" id="currency-button">USD - $</button>
+                        <div id="currency-dropdown">
+                            <input type="text" id="currency-search" placeholder="Search currency">
+                            <ul id="currency-list"></ul>
+                        </div>
+                    </div>
+                    <button type="button" id="track-button">Track Progress</button>
+                </form>
+                <section id="results">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progress" class="progress"></div>
+                        </div>
+                        <p id="progress-label">Progress: 0%</p>
+                    </div>
+                    <div id="savings-chart">
+                        <canvas id="savings-growth"></canvas>
+                    </div>
+                </section>
+                <section id="tips">
+                    <h2>Savings Tips</h2>
+                    <p id="tips-content">Enter your goal details to get personalized savings tips!</p>
+                </section>
+                <section id="resources">
+                    <h2>Boost Your Savings</h2>
+                    <div class="resource-card">
+                        <a href="https://example.com/budget-app" target="_blank" rel="noopener">Top Budgeting App</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://example.com/savings-account" target="_blank" rel="noopener">High-Yield Savings</a>
+                    </div>
+                </section>
+            </main>
+            <footer>
+                <p>© 2025 Savings Goal Calculator By GameNeXT</p>
+            </footer>
+        </div>
+
+        <!-- Right Ad Space -->
+        <div class="ad-space ad-right">Advertisement Right</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Currency List
+        const currencies = [
+            { code: "USD", symbol: "$" },
+            { code: "EUR", symbol: "€" },
+            { code: "GBP", symbol: "£" },
+            { code: "JPY", symbol: "¥" },
+            { code: "AUD", symbol: "A$" },
+            { code: "CAD", symbol: "C$" },
+            { code: "CHF", symbol: "Fr" },
+            { code: "CNY", symbol: "¥" },
+            { code: "INR", symbol: "₹" },
+            { code: "BRL", symbol: "R$" }
+        ];
+
+        // Populate Currency Dropdown
+        const currencyList = document.getElementById('currency-list');
+        currencies.forEach(currency => {
+            const li = document.createElement('li');
+            li.textContent = `${currency.code} - ${currency.symbol}`;
+            li.dataset.code = currency.code;
+            li.dataset.symbol = currency.symbol;
+            currencyList.appendChild(li);
+        });
+
+        // Dropdown Functionality
+        const currencyButton = document.getElementById('currency-button');
+        const currencyDropdown = document.getElementById('currency-dropdown');
+        const currencySearch = document.getElementById('currency-search');
+        const currencySelect = document.querySelector('.currency-select');
+        let selectedSymbol = '$';
+
+        currencyButton.addEventListener('click', () => {
+            currencyDropdown.classList.toggle('open');
+        });
+
+        currencySearch.addEventListener('input', () => {
+            const searchTerm = currencySearch.value.toLowerCase();
+            const items = currencyList.querySelectorAll('li');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        currencyList.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                selectedSymbol = e.target.dataset.symbol;
+                currencyButton.textContent = `${e.target.dataset.code} - ${e.target.dataset.symbol}`;
+                currencyDropdown.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!currencySelect.contains(e.target)) {
+                currencyDropdown.classList.remove('open');
+            }
+        });
+
+        // Calculation Logic
+        const trackButton = document.getElementById('track-button');
+        const progressContainer = document.querySelector('.progress-container');
+        const progress = document.getElementById('progress');
+        const progressLabel = document.getElementById('progress-label');
+        let savingsChart;
+
+        function calculateSavings() {
+            const goalAmount = parseFloat(document.getElementById('goal-amount').value) || 0;
+            const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
+            const monthlyContribution = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+
+            if (goalAmount <= 0 || currentSavings < 0 || monthlyContribution < 0 || interestRate < 0) {
+                alert('Please enter valid values (Goal > 0, others >= 0).');
+                return;
+            }
+
+            // Calculate Progress and Time to Goal
+            const progressPercentage = Math.min((currentSavings / goalAmount) * 100, 100);
+            let savings = currentSavings;
+            const monthlyInterest = interestRate / 1200; // Monthly compound interest
+            const savingsGrowth = [];
+            let monthsToGoal = 0;
+
+            if (monthlyContribution > 0 || savings < goalAmount) {
+                while (savings < goalAmount && monthsToGoal < 120) { // Cap at 10 years
+                    savings += monthlyContribution;
+                    savings *= (1 + monthlyInterest);
+                    savingsGrowth.push(savings);
+                    monthsToGoal++;
+                }
+            }
+
+            // Update Progress Bar
+            progressContainer.classList.add('show');
+            progress.style.width = '0%';
+            setTimeout(() => {
+                progress.style.width = `${progressPercentage}%`;
+            }, 100);
+            progressLabel.textContent = `Progress: ${progressPercentage.toFixed(1)}% (Goal: ${selectedSymbol}${goalAmount.toFixed(2)})`;
+
+            // Update Chart
+            if (savingsChart) savingsChart.destroy();
+            const ctx = document.getElementById('savings-growth').getContext('2d');
+            savingsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: savingsGrowth.length }, (_, i) => `Month ${i + 1}`),
+                    datasets: [{
+                        label: `Savings Growth (${selectedSymbol})`,
+                        data: savingsGrowth,
+                        borderColor: '#3b82f6',
+                        backgroundColor: '#3b82f633',
+                        fill: true,
+                        tension: 0.1
+                    }, {
+                        label: `Goal (${selectedSymbol}${goalAmount.toFixed(2)})`,
+                        data: Array(savingsGrowth.length).fill(goalAmount),
+                        borderColor: '#22c55e',
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: { duration: 1000, easing: 'easeInOutQuad' },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: `Savings (${selectedSymbol})`, color: '#ffffff' } },
+                        x: { title: { display: true, text: 'Time (Months)', color: '#ffffff' } }
+                    },
+                    plugins: { legend: { labels: { color: '#ffffff' } } }
+                }
+            });
+
+            // Personalized Tips
+            const tipsContent = document.getElementById('tips-content');
+            let tips = [];
+            if (progressPercentage < 25) {
+                tips.push(`You're only ${progressPercentage.toFixed(1)}% toward your goal of ${selectedSymbol}${goalAmount.toFixed(2)}. Increase your monthly contribution to speed up progress!`);
+            }
+            if (monthlyContribution / goalAmount < 0.02) {
+                tips.push(`Your monthly contribution (${selectedSymbol}${monthlyContribution.toFixed(2)}) is less than 2% of your goal. Aim for at least ${selectedSymbol}${(goalAmount * 0.02).toFixed(2)} to reach it faster.`);
+            }
+            if (interestRate < 1) {
+                tips.push(`Your interest rate (${interestRate}%) is low. Consider a high-yield savings account for better returns.`);
+            }
+            if (monthsToGoal > 60) {
+                tips.push(`It’ll take ${monthsToGoal} months to reach ${selectedSymbol}${goalAmount.toFixed(2)}. Boost contributions or find higher returns to shorten this time.`);
+            }
+            tipsContent.textContent = tips.length > 0 ? tips.join(' ') : `Great job! You're on track to reach ${selectedSymbol}${goalAmount.toFixed(2)} in ${monthsToGoal} months.`;
+        }
+
+        trackButton.addEventListener('click', calculateSavings);
+
+        // Initialize Chart Placeholder
+        const ctx = document.getElementById('savings-growth').getContext('2d');
+        savingsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Month 1'],
+                datasets: [{
+                    label: `Savings Growth (${selectedSymbol})`,
+                    data: [0],
+                    borderColor: '#3b82f6',
+                    backgroundColor: '#3b82f633',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: `Savings (${selectedSymbol})`, color: '#ffffff' } },
+                    x: { title: { display: true, text: 'Time (Months)', color: '#ffffff' } }
+                },
+                plugins: { legend: { labels: { color: '#ffffff' } } }
+            }
+        });
+    </script>
+</body>
+</html>
